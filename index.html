@@ -169,9 +169,8 @@
             padding: 5px 10px;
             font-size: 14px;
         }
-
         .search-input {
-            width: 50px; /* Defina o tamanho desejado aqui */
+            width: 80%;
         }
     </style>
 </head>
@@ -224,10 +223,10 @@
         <button class="small-button" onclick="zoomIn()">Zoom In</button>
         <button class="small-button" onclick="zoomOut()">Zoom Out</button>
         <button class="small-button" onclick="clearLayout()">Limpar Web</button>
-        <button class="non-submit-button" onclick="getAllConnections()">Mostrar Todos</button>
+        <button class="small-button" onclick="getAllConnections()">Mostrar Todos</button>
     </div>
     <h1>Buscar Nome na Web</h1>
-    <input type="text" id="searchName" placeholder="Buscar um nome" class="search-input">
+    <input type="text" id="searchName" placeholder="Buscar um nome">
     <button class="non-submit-button" onclick="searchConnections()">Buscar</button>
 
     <script>
