@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexões</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://unpkg.com/cytoscape@3.21.1/dist/cytoscape.min.js"></script>
+
+    <style>
+        /* Estilos para os popups */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #333;
+            z-index: 1000;
+            max-width: 400px; /* Ajuste conforme necessário */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilos para o overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #cy {
+            width: 1330px;
+            height: 600px;
+            border: 3px solid #000000;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Popups -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Popup: Bem-vinde a Kiss Web -->
+    <div class="popup" id="popupWelcome">
+        <h2>Bem-vinde a Kiss Web</h2>
+        <button onclick="openPopup('popupAddWeb')">Adicionar na Web</button>
+        <button onclick="openPopup('popupCreateConnection')">Criar Conexão</button>
+        <button onclick="closeAllPopups()">Ver Web Completa</button>
+    </div>
+
+    <!-- Popup: Adicione Alguém na Web -->
+    <div class="popup" id="popupAddWeb">
+        <h2>Adicione Alguém na Web</h2>
+        <form id="addNameFormPopup">
+            <label for="namePopup">Nome e Sobrenome:</label>
+            <input type="text" id="namePopup" name="namePopup" required>
+            <label for="instagramPopup">Instagram:</label>
+            <input type="text" id="instagramPopup" name="instagramPopup" required>
+            <button type="submit">Adicionar</button>
+        </form>
+        <button onclick="closeAllPopups()">Fechar</button>
+    </div>
+
+    <!-- Popup: Crie uma conexão na Web -->
+    <div class="popup" id="popupCreateConnection">
+        <h2>Crie uma conexão na Web</h2>
+        <form id="createConnectionFormPopup">
+            <label for="name1Popup">Nome 1:</label>
+            <input type="text" id="name1Popup" name="name1Popup" required>
+            <label for="name2Popup">Nome 2:</label>
+            <input type="text" id="name2Popup" name="name2Popup" required>
+            <button type="submit">Criar Conexão</button>
+        </form>
+        <button onclick="closeAllPopups()">Fechar</button>
+    </div>
+
+
+    <!-- Restante do seu código HTML -->
+    <h1>Adicionar Nomes</h1>
+    <form id="addNameForm">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="instagram">Instagram:</label>
+        <input type="text" id="instagram" name="instagram" required>
+        <button type="submit">Adicionar Nome</button>
+    </form>
+
+    <h1>Criar Conexão</h1>
+    <form id="createConnectionForm">
+        <label for="name1">Nome 1:</label>
+        <input type="text" id="name1" name="name1" required>
+        <label for="name2">Nome 2:</label>
+        <input type="text" id="name2" name="name2" required>
+        <button type="submit">Criar Conexão</button>
+    </form>
+
+    <h1>Pesquisar Nome</h1>
+    <input type="text" id="searchName" placeholder="Digite um nome">
+    <button onclick="searchConnections()">Pesquisar</button>
+
+    <button onclick="getAllConnections()">Mostrar Todos</button>
+
+    <div id="cy"></div>
+    <button onclick="zoomIn()">Zoom In</button>
+    <button onclick="zoomOut()">Zoom Out</button>
+    <button onclick="clearLayout()">Limpar Web</button>
+
+
+    <script>
+        let cy; 
+
+        function openPopup(popupId) {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById(popupId).style.display = 'block';
+        }
+
+        // Função para fechar todos os popups
+        function closeAllPopups() {
+            const popups = document.querySelectorAll('.popup');
+            popups.forEach(popup => {
+                popup.style.display = 'none';
+            });
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function closeAllPopupsAndOpenWelcomePopup() {
+            closeAllPopups();
+            openPopup('popupWelcome');
+        }
+
+        // welcome popup
+        window.onload = function() {
+            openPopup('popupWelcome');
+            initializeGraph();
+        };
+
+        function initializeGraph() {
+            fetch('/getallconnections')
+            .then(response => response.json())
+            .then(data => {
+                renderGraph(data);
+            })
+            .catch(error => {
+                console.error('Error initializing graph:', error);
+                alert('Erro ao inicializar o gráfico.');
+            });
+        }
+
+        // Event listener para o formulário "Adicione Alguém na Web" do popup
+        document.getElementById('addNameFormPopup').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const name = document.getElementById('namePopup').value;
+            const instagram = document.getElementById('instagramPopup').value;
+
+            const response = await fetch('/addname', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, instagram })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(`Nome '${name}' adicionado com sucesso! ID: ${result.id}`);
+                document.getElementById('namePopup').value = "";
+                document.getElementById('instagramPopup').value = "";
+                closeAllPopupsAndOpenWelcomePopup(); 
+                getAllConnections();
+            } else {
+                alert(`Erro: ${result.error}`);
+            }
+        });
+
+        // Event listener para o formulário "Crie uma conexão na Web" do popup
+        document.getElementById('createConnectionFormPopup').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const name1 = document.getElementById('name1Popup').value;
+            const name2 = document.getElementById('name2Popup').value;
+
+            const response = await fetch('/createconnection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name1, name2 })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                document.getElementById('name1Popup').value = "";
+                document.getElementById('name2Popup').value = "";
+                closeAllPopupsAndOpenWelcomePopup(); 
+                getAllConnections(); 
+            } else {
+                alert(`Erro: ${result.error || result.message}`);
+            }
+        });
+
+        // Event listener para o formulário principal "Adicionar Nomes"
+        document.getElementById('addNameForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const instagram = document.getElementById('instagram').value;
+
+            const response = await fetch('/addname', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, instagram })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(`Nome '${name}' adicionado com sucesso! ID: ${result.id}`);
+                document.getElementById('name').value = "";
+                document.getElementById('instagram').value = "";
+                getAllConnections(); // Atualizar gráfico
+            } else {
+                alert(`Erro: ${result.error}`);
+            }
+        });
+
+        // Event listener para o formulário principal "Criar Conexão"
+        document.getElementById('createConnectionForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const name1 = document.getElementById('name1').value;
+            const name2 = document.getElementById('name2').value;
+
+            const response = await fetch('/createconnection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name1, name2 })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                document.getElementById('name1').value = "";
+                document.getElementById('name2').value = "";
+                getAllConnections(); // Atualizar gráfico
+            } else {
+                alert(`Erro: ${result.error || result.message}`);
+            }
+        });
+
+        function searchConnections() {
+            const name = document.getElementById('searchName').value;
+            
+            fetch('/getconnections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data received from API:', data);
+                renderGraph(data);
+            })
+            .catch(error => {
+                console.error('Error fetching connections:', error);
+                alert('Erro ao buscar conexões.');
+            });
+        }
+
+        function getAllConnections() {
+            fetch('/getallconnections')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data received from API:', data);
+                renderGraph(data);
+            })
+            .catch(error => {
+                console.error('Error fetching all connections:', error);
+                alert('Erro ao buscar todas as conexões.');
+            });
+        }
+
+        function clearLayout() {
+            if (cy) {
+                cy.elements().remove();
+            }
+        }
+
+        function zoomIn() {
+            cy.zoom(cy.zoom() * 1.2); 
+        }
+        
+        function zoomOut() {
+            cy.zoom(cy.zoom() / 1.2);
+        }
+
+        // Função para renderizar o gráfico Cytoscape
+        function renderGraph(data) {
+            if (!data || !data.nodes || !data.edges) {
+                alert('Dados inválidos recebidos.');
+                return;
+            }
+
+            const elements = [];
+
+            data.nodes.forEach(node => {
+                elements.push({ data: { id: node.id, label: node.label } });
+            });
+
+            data.edges.forEach(edge => {
+                elements.push({ data: { source: edge.source, target: edge.target } });
+            });
+
+            cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: elements,
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#FF007F',
+                            'label': 'data(label)',
+                            'text-valign': 'bottom',
+                            'color': '#000000',
+                            'font-size': '15px',
+                            'width': '50px',
+                            'height': '50px'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle'
+                        }
+                    },
+                ]
+            });
+            
+
+            cy.ready(function(){
+                cy.layout({
+                    name: 'concentric',
+                    fit: false,
+                    padding: 30,
+                    startAngle: 3 / 2 * Math.PI,
+                    clockwise: true,
+                    equidistant: false,
+                    minNodeSpacing: 100,
+                    avoidOverlap: true,
+                    concentric: function(node){
+                        return node.degree();
+                    },
+                    levelWidth: function(nodes){
+                        return 2;
+                    }
+                }).run();
+            });
+
+        }
+    </script>
+</body>
+</html>
