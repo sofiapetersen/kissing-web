@@ -90,7 +90,7 @@
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 16px;
-            background-color: #2000d6;
+            background-color: rgb(55, 142, 255);
             color: #fff;
             cursor: pointer;
             display: block;
@@ -98,9 +98,8 @@
         }
 
         .header-button:hover {
-            background-color: #2000d6;
+            background-color: rgb(55, 142, 255);
         }
-
 
         /* Estilos dos Popups */
         .popup {
@@ -172,6 +171,10 @@
         .search-input {
             width: 80%;
         }
+
+        .highlighted {
+            background-color: #1157b3;
+        }
     </style>
 </head>
 <body>
@@ -216,8 +219,7 @@
         </form>
         <button class="non-submit-button" onclick="closeAllPopups()">Fechar</button>
     </div>
-
-
+      
     <div id="cy"></div>
     <div class="button-container">
         <button class="small-button" onclick="zoomIn()">Zoom In</button>
@@ -255,7 +257,7 @@
         window.onload = function() {
             openPopup('popupWelcome');
             initializeGraph();
-        };
+        }
 
         function initializeGraph() {
             fetch('/getallconnections')
@@ -317,8 +319,6 @@
             }
         });
 
-
-
         function searchConnections() {
             const name = document.getElementById('searchName').value;
             
@@ -330,10 +330,12 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Data received from API:', data);
+                document.getElementById('searchName').value = '';
                 renderGraph(data);
             })
             .catch(error => {
                 console.error('Error fetching connections:', error);
+                document.getElementById('searchName').value = '';
                 alert('Erro ao buscar conexões.');
             });
         }
@@ -407,14 +409,20 @@
                             'target-arrow-shape': 'triangle'
                         }
                     },
-                ]
-            });
-
-
-            cy.ready(function(){
-                cy.layout({
+                    {
+                        selector: '.highlighted',
+                        style: {
+                            'background-color': '#378EF0', 
+                            'line-color': '#1157b3', 
+                            'target-arrow-color': '#378EF0', 
+                            'transition-property': 'background-color, line-color, target-arrow-color',
+                            'transition-duration': '0.5s'
+                        }
+                    }
+                ],
+                layout: {
                     name: 'concentric',
-                    fit: false,
+                    fit: true,
                     padding: 30,
                     startAngle: 3 / 2 * Math.PI,
                     clockwise: true,
@@ -427,9 +435,24 @@
                     levelWidth: function(nodes){
                         return 2;
                     }
-                }).run();
+                }
             });
 
+            cy.on('tap', 'node', function(event) {
+                const node = event.target;
+                const connectedEdges = node.connectedEdges();
+                const connectedNodes = connectedEdges.targets().add(node).add(connectedEdges.sources());
+
+                cy.elements().removeClass('highlighted');
+                connectedNodes.addClass('highlighted');
+                connectedEdges.addClass('highlighted');
+            });
+
+            cy.on('tap', function(event) {
+                if (event.target === cy) {
+                    cy.elements().removeClass('highlighted');
+                }
+            });
         }
     </script>
 </body>
