@@ -1,11 +1,17 @@
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
+import express from 'express';
+import bodyParser from 'body-parser';
 
-// Substitua esses valores pelos seus do Supabase
+const app = express();
+const port = process.env.PORT || 3000;
+
 const supabaseUrl = 'https://pygqirmwmklcmhbgflgp.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5Z3Fpcm13bWtsY21oYmdmbGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY0ODU2NzcsImV4cCI6MjAzMjA2MTY3N30.XwgiRamAuySwqx6EvvWam8i9_EvG4aW2PUTEXeMZWfQ';
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Exemplo de endpoint para obter todas as conexões
+app.use(bodyParser.json());
+
+// Endpoint para obter todas as conexões
 app.get('/getallconnections', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -19,7 +25,7 @@ app.get('/getallconnections', async (req, res) => {
     }
 });
 
-// Exemplo de endpoint para adicionar um nome
+// Endpoint para adicionar um nome
 app.post('/addname', async (req, res) => {
     const { name, instagram } = req.body;
     try {
@@ -34,7 +40,7 @@ app.post('/addname', async (req, res) => {
     }
 });
 
-// Exemplo de endpoint para criar uma conexão
+// Endpoint para criar uma conexão
 app.post('/createconnection', async (req, res) => {
     const { name1, name2 } = req.body;
     try {
@@ -49,7 +55,7 @@ app.post('/createconnection', async (req, res) => {
     }
 });
 
-// Exemplo de endpoint para buscar conexões por nome
+// Endpoint para buscar conexões por nome
 app.post('/getconnections', async (req, res) => {
     const { name } = req.body;
     try {
@@ -63,4 +69,8 @@ app.post('/getconnections', async (req, res) => {
         console.error('Error fetching connections:', error);
         res.status(500).json({ error: 'Erro ao buscar conexões.' });
     }
+});
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
