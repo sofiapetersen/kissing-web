@@ -166,293 +166,282 @@
         
         .small-button {
             padding: 5px 10px;
+            background-color: #d6006c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
             font-size: 14px;
         }
-        .search-input {
-            width: 80%;
+        
+        .small-button:hover {
+            background-color: #d6006c;
         }
 
-        .highlighted {
-            background-color: #1157b3;
+        .wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 300px; /* Largura máxima da div wrapper */
+            margin: 0 auto; /* Centraliza a div na página */
+        }
+
+        .popup h2 {
+            margin-top: 0;
+            color: #a50052; /* Cor do título do popup */
+        }
+
+        .popup button[type="submit"] {
+            background-color: #d6006c;
+        }
+
+        .popup button[type="submit"]:hover {
+            background-color: #d6006c;
+        }
+
+        .popup form label {
+            font-weight: bold;
+        }
+
+        .popup form input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .popup form button[type="submit"] {
+            background-color: #d6006c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .popup form button[type="submit"]:hover {
+            background-color: #d6006c;
+        }
+
+        .popup form .close-button {
+            background-color: #ccc;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+
+        .popup form .close-button:hover {
+            background-color: #999;
+        }
+
+        .header .wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .header-button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Kiss Web</h1>
-        <button onclick="openPopup('popupWelcome')" style="position: absolute; top: 28px; right: 1800px;">Home</button>
-    </div>
-    
-
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Popup: Bem-vinde a Kiss Web -->
-    <div class="popup" id="popupWelcome">
-        <h2>Bem-vinde a Kiss Web</h2>
-        <button class="non-submit-button" onclick="openPopup('popupAddWeb')">Adicionar na Web</button>
-        <button class="non-submit-button" onclick="openPopup('popupCreateConnection')">Criar Conexão</button>
-        <button class="non-submit-button" onclick="closeAllPopups()">Ver Web Completa</button>
     </div>
 
-    <!-- Popup: Adicione Alguém na Web -->
-    <div class="popup" id="popupAddWeb">
-        <h2>Adicione Alguém na Web</h2>
-        <form id="addNameFormPopup">
-            <label for="namePopup">Nome:</label>
-            <input type="text" id="namePopup" name="namePopup" required placeholder="Digite nome sobrenome">
-            <label for="instagramPopup">Instagram:</label>
-            <input type="text" id="instagramPopup" name="instagramPopup" required placeholder="Digite o @ no instagram">
-            <button type="submit">Adicionar</button>
-        </form>
-        <button class="non-submit-button" onclick="closeAllPopups()">Fechar</button>
-    </div>
+    <!-- Formulário de Adicionar Nome -->
+    <form id="addNameForm">
+        <h2>Adicionar Nome</h2>
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="instagram">Instagram:</label>
+        <input type="text" id="instagram" name="instagram" required>
+        <button type="submit">Adicionar</button>
+    </form>
 
-    <!-- Popup: Crie uma conexão na Web -->
-    <div class="popup" id="popupCreateConnection">
-        <h2>Crie uma conexão na Web</h2>
-        <form id="createConnectionFormPopup">
-            <label for="name1Popup">Nome 1:</label>
-            <input type="text" id="name1Popup" name="name1Popup" required placeholder="Digite a primeira pessoa">
-            <label for="name2Popup">Nome 2:</label>
-            <input type="text" id="name2Popup" name="name2Popup" required placeholder="Digite a segunda pessoa">
-            <button type="submit">Criar Conexão</button>
-        </form>
-        <button class="non-submit-button" onclick="closeAllPopups()">Fechar</button>
-    </div>
-      
+    <!-- Formulário de Criar Conexão -->
+    <form id="createConnectionForm">
+        <h2>Criar Conexão</h2>
+        <label for="name1">Nome 1:</label>
+        <input type="text" id="name1" name="name1" required>
+        <label for="name2">Nome 2:</label>
+        <input type="text" id="name2" name="name2" required>
+        <button type="submit">Criar Conexão</button>
+    </form>
+
+    <!-- Formulário de Obter Conexões -->
+    <form id="getConnectionsForm">
+        <h2>Obter Conexões</h2>
+        <label for="queryName">Nome:</label>
+        <input type="text" id="queryName" name="queryName" required>
+        <button type="submit">Obter Conexões</button>
+    </form>
+
+    <!-- Botão para obter todas as conexões -->
+    <button class="non-submit-button" onclick="fetchAllConnections()">Obter Todas as Conexões</button>
+
+    <!-- Contêiner do Grafo -->
     <div id="cy"></div>
-    <div class="button-container">
-        <button class="small-button" onclick="zoomIn()">Zoom In</button>
-        <button class="small-button" onclick="zoomOut()">Zoom Out</button>
-        <button class="small-button" onclick="clearLayout()">Limpar Web</button>
-        <button class="small-button" onclick="getAllConnections()">Mostrar Todos</button>
+
+    <!-- Popup para obter conexões -->
+    <div id="popup" class="popup">
+        <h2>Obter Conexões</h2>
+        <form id="popupForm">
+            <label for="popupName">Nome:</label>
+            <input type="text" id="popupName" name="popupName" required>
+            <button type="submit">Obter Conexões</button>
+            <button type="button" class="close-button" onclick="closePopup()">Fechar</button>
+        </form>
     </div>
-    <h1>Buscar Nome na Web</h1>
-    <input type="text" id="searchName" placeholder="Buscar um nome">
-    <button class="non-submit-button" onclick="searchConnections()">Buscar</button>
+
+    <!-- Overlay para o popup -->
+    <div id="overlay" class="overlay" onclick="closePopup()"></div>
 
     <script>
-        let cy;
-
-        function openPopup(popupId) {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById(popupId).style.display = 'block';
-        }
-
-        // Função para fechar todos os popups
-        function closeAllPopups() {
-            const popups = document.querySelectorAll('.popup');
-            popups.forEach(popup => {
-                popup.style.display = 'none';
-            });
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        function closeAllPopupsAndOpenWelcomePopup() {
-            closeAllPopups();
-            openPopup('popupWelcome');
-        }
-
-        // welcome popup
-        window.onload = function() {
-            openPopup('popupWelcome');
-            initializeGraph();
-        }
-
-        function initializeGraph() {
-            fetch('/getallconnections')
-            .then(response => response.json())
-            .then(data => {
-                renderGraph(data);
-            })
-            .catch(error => {
-                console.error('Error initializing graph:', error);
-                alert('Erro ao inicializar o gráfico.');
-            });
-        }
-
-        // Event listener para o formulário "Adicione Alguém na Web" do popup
-        document.getElementById('addNameFormPopup').addEventListener('submit', async function (event) {
+        document.getElementById('addNameForm').addEventListener('submit', async (event) => {
             event.preventDefault();
-            const name = document.getElementById('namePopup').value;
-            const instagram = document.getElementById('instagramPopup').value;
+            const name = document.getElementById('name').value;
+            const instagram = document.getElementById('instagram').value;
 
-            const response = await fetch('/addname', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, instagram })
-            });
+            try {
+                const response = await fetch('https://kissing-web.vercel.app/addname', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, instagram })
+                });
 
-            const result = await response.json();
-            if (result.success) {
-                alert(`Nome '${name}' adicionado com sucesso! ID: ${result.id}`);
-                document.getElementById('namePopup').value = "";
-                document.getElementById('instagramPopup').value = "";
-                closeAllPopupsAndOpenWelcomePopup(); 
-                getAllConnections();
-            } else {
-                alert(`Erro: ${result.error}`);
+                const result = await response.json();
+                if (result.success) {
+                    alert('Nome adicionado com sucesso!');
+                    document.getElementById('addNameForm').reset();
+                } else {
+                    alert('Erro ao adicionar nome: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar nome:', error);
+                alert('Erro ao adicionar nome. Veja o console para detalhes.');
             }
         });
 
-        // Event listener para o formulário "Crie uma conexão na Web" do popup
-        document.getElementById('createConnectionFormPopup').addEventListener('submit', async function (event) {
+        document.getElementById('createConnectionForm').addEventListener('submit', async (event) => {
             event.preventDefault();
-            const name1 = document.getElementById('name1Popup').value;
-            const name2 = document.getElementById('name2Popup').value;
+            const name1 = document.getElementById('name1').value;
+            const name2 = document.getElementById('name2').value;
 
-            const response = await fetch('/createconnection', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name1, name2 })
-            });
+            try {
+                const response = await fetch('https://kissing-web.vercel.app/createconnection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name1, name2 })
+                });
 
-            const result = await response.json();
-            if (result.success) {
-                alert(result.message);
-                document.getElementById('name1Popup').value = "";
-                document.getElementById('name2Popup').value = "";
-                closeAllPopupsAndOpenWelcomePopup(); 
-                getAllConnections(); 
-            } else {
-                alert(`Erro: ${result.error || result.message}`);
+                const result = await response.json();
+                if (result.success) {
+                    alert('Conexão criada com sucesso!');
+                    document.getElementById('createConnectionForm').reset();
+                } else {
+                    alert('Erro ao criar conexão: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao criar conexão:', error);
+                alert('Erro ao criar conexão. Veja o console para detalhes.');
             }
         });
 
-        function searchConnections() {
-            const name = document.getElementById('searchName').value;
-            
-            fetch('/getconnections', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Data received from API:', data);
-                document.getElementById('searchName').value = '';
-                renderGraph(data);
-            })
-            .catch(error => {
-                console.error('Error fetching connections:', error);
-                document.getElementById('searchName').value = '';
-                alert('Erro ao buscar conexões.');
-            });
-        }
+        document.getElementById('getConnectionsForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('queryName').value;
 
-        function getAllConnections() {
-            fetch('/getallconnections')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Data received from API:', data);
-                renderGraph(data);
-            })
-            .catch(error => {
-                console.error('Error fetching all connections:', error);
-                alert('Erro ao buscar todas as conexões.');
-            });
-        }
+            try {
+                const response = await fetch('https://kissing-web.vercel.app/getconnections', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
 
-        function clearLayout() {
-            if (cy) {
-                cy.elements().remove();
+                const data = await response.json();
+                renderGraph(data);
+            } catch (error) {
+                console.error('Erro ao obter conexões:', error);
+                alert('Erro ao obter conexões. Veja o console para detalhes.');
+            }
+        });
+
+        async function fetchAllConnections() {
+            try {
+                const response = await fetch('https://kissing-web.vercel.app/getallconnections');
+                const data = await response.json();
+                renderGraph(data);
+            } catch (error) {
+                console.error('Erro ao obter todas as conexões:', error);
+                alert('Erro ao obter todas as conexões. Veja o console para detalhes.');
             }
         }
 
-        function zoomIn() {
-            cy.zoom(cy.zoom() * 1.2); 
-        }
-
-        function zoomOut() {
-            cy.zoom(cy.zoom() / 1.2);
-        }
-
-        // Função para renderizar o gráfico Cytoscape
         function renderGraph(data) {
-            if (!data || !data.nodes || !data.edges) {
-                alert('Dados inválidos recebidos.');
-                return;
-            }
-
-            const elements = [];
-
-            data.nodes.forEach(node => {
-                elements.push({ data: { id: node.id, label: node.label } });
-            });
-
-            data.edges.forEach(edge => {
-                elements.push({ data: { source: edge.source, target: edge.target } });
-            });
-
-            cy = cytoscape({
+            const cy = cytoscape({
                 container: document.getElementById('cy'),
-                elements: elements,
+                elements: {
+                    nodes: data.nodes.map(node => ({ data: { id: node.id, label: node.label } })),
+                    edges: data.edges.map(edge => ({ data: { source: edge.source, target: edge.target } }))
+                },
                 style: [
                     {
                         selector: 'node',
                         style: {
-                            'background-color': '#FF007F',
                             'label': 'data(label)',
-                            'text-valign': 'bottom',
-                            'color': '#000000',
-                            'font-size': '15px',
-                            'width': '50px',
-                            'height': '50px'
+                            'text-valign': 'center',
+                            'color': '#fff',
+                            'background-color': '#d6006c',
+                            'font-size': '12px',
+                            'width': '50px', // Largura fixa
+                            'height': '50px' // Altura fixa
                         }
                     },
                     {
                         selector: 'edge',
                         style: {
-                            'width': 2,
-                            'line-color': '#ccc',
-                            'target-arrow-color': '#ccc',
+                            'width': 3,
+                            'line-color': '#d6006c',
+                            'target-arrow-color': '#d6006c',
                             'target-arrow-shape': 'triangle'
-                        }
-                    },
-                    {
-                        selector: '.highlighted',
-                        style: {
-                            'background-color': '#378EF0', 
-                            'line-color': '#1157b3', 
-                            'target-arrow-color': '#378EF0', 
-                            'transition-property': 'background-color, line-color, target-arrow-color',
-                            'transition-duration': '0.5s'
                         }
                     }
                 ],
                 layout: {
-                    name: 'concentric',
-                    fit: true,
-                    padding: 30,
-                    startAngle: 3 / 2 * Math.PI,
-                    clockwise: true,
-                    equidistant: false,
-                    minNodeSpacing: 100,
-                    avoidOverlap: true,
-                    concentric: function(node){
-                        return node.degree();
-                    },
-                    levelWidth: function(nodes){
-                        return 2;
-                    }
+                    name: 'grid',
+                    rows: 3
                 }
             });
+        }
 
-            cy.on('tap', 'node', function(event) {
-                const node = event.target;
-                const connectedEdges = node.connectedEdges();
-                const connectedNodes = connectedEdges.targets().add(node).add(connectedEdges.sources());
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
 
-                cy.elements().removeClass('highlighted');
-                connectedNodes.addClass('highlighted');
-                connectedEdges.addClass('highlighted');
-            });
-
-            cy.on('tap', function(event) {
-                if (event.target === cy) {
-                    cy.elements().removeClass('highlighted');
-                }
-            });
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }
     </script>
 </body>
