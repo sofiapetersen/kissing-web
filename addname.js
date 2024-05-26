@@ -1,3 +1,5 @@
+const supabase = require('./client');
+
 // Endpoint para adicionar nome
 app.post('/addname', async (req, res) => {
     const { name, instagram } = req.body;
