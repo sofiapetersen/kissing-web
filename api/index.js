@@ -61,7 +61,7 @@ app.post('/createconnection', async (req, res) => {
 });
 
 // Endpoint para obter conexões de um nome específico
-app.post('/api/getconnections', async (req, res) => {
+app.post('/getconnections', async (req, res) => {
     const { searchName } = req.body;
     try {
         const { data, error } = await supabase
@@ -87,7 +87,7 @@ app.post('/api/getconnections', async (req, res) => {
 });
 
 // Endpoint para obter todas as conexões
-app.get('/api/getallconnections', async (req, res) => {
+app.get('/getallconnections', async (req, res) => {
     try {
         const { data: namesData, error: namesError } = await supabase.from('pessoas').select('*');
         const { data: connectionsData, error: connectionsError } = await supabase.from('conexoes').select('*');
@@ -106,7 +106,7 @@ app.get('/api/getallconnections', async (req, res) => {
 });
 
 // Rota para a página inicial
-app.get('/api/', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
