@@ -26,7 +26,7 @@ let cy;
         }
 
         function initializeGraph() {
-            fetch('/api/getallconnections')
+            fetch('/getallconnections')
             .then(response => response.json())
             .then(data => {
                 renderGraph(data);
@@ -43,7 +43,7 @@ let cy;
             const name = document.getElementById('namePopup').value;
             const instagram = document.getElementById('instagramPopup').value;
 
-            const response = await fetch('/api/addname', {
+            const response = await fetch('/addname', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, instagram })
@@ -67,7 +67,7 @@ let cy;
             const name1 = document.getElementById('name1Popup').value;
             const name2 = document.getElementById('name2Popup').value;
 
-            const response = await fetch('/api/createconnection', {
+            const response = await fetch('/createconnection', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name1, name2 })
@@ -88,7 +88,7 @@ let cy;
         function searchConnections() {
             const name = document.getElementById('searchName').value;
             
-            fetch('/api/getconnections', {
+            fetch('/getconnections', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ searchName: name })
@@ -107,7 +107,7 @@ let cy;
         }
 
         function getAllConnections() {
-            fetch('/api/getallconnections')
+            fetch('/getallconnections')
             .then(response => response.json())
             .then(data => {
                 console.log('Data received from API:', data);

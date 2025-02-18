@@ -9,7 +9,7 @@ const port = 5000;
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public'))); // Adicione esta linha
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 (async () => {
     const { data, error } = await supabase.from("pessoas").select("*").limit(1);
