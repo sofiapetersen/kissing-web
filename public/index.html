@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiss Web</title>
+    <script src="https://unpkg.com/cytoscape@3.21.1/dist/cytoscape.min.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Kiss Web</h1>
+        <button onclick="openPopup('popupWelcome')" style="position: absolute; top: 28px; right: 1800px;">Home</button>
+    </div>
+    
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Popup: Bem-vinde a Kiss Web -->
+    <div class="popup" id="popupWelcome">
+        <h2>Bem-vinde a Kiss Web</h2>
+        <button class="non-submit-button" onclick="openPopup('popupAddWeb')">Adicionar na Web</button>
+        <button class="non-submit-button" onclick="openPopup('popupCreateConnection')">Criar Conexão</button>
+        <button class="non-submit-button" onclick="closeAllPopups()">Ver Web Completa</button>
+    </div>
+
+    <!-- Popup: Adicione Alguém na Web -->
+    <div class="popup" id="popupAddWeb">
+        <h2>Adicione Alguém na Web</h2>
+        <form id="addNameFormPopup">
+            <label for="namePopup">Nome:</label>
+            <input type="text" id="namePopup" name="namePopup" required placeholder="Digite nome sobrenome">
+            <label for="instagramPopup">Instagram:</label>
+            <input type="text" id="instagramPopup" name="instagramPopup" required placeholder="Digite o @ no instagram">
+            <button type="submit">Adicionar</button>
+        </form>
+        <button class="non-submit-button" onclick="closeAllPopups()">Fechar</button>
+    </div>
+
+    <!-- Popup: Crie uma conexão na Web -->
+    <div class="popup" id="popupCreateConnection">
+        <h2>Crie uma conexão na Web</h2>
+        <form id="createConnectionFormPopup">
+            <label for="name1Popup">Nome 1:</label>
+            <input type="text" id="name1Popup" name="name1Popup" required placeholder="Digite a primeira pessoa">
+            <label for="name2Popup">Nome 2:</label>
+            <input type="text" id="name2Popup" name="name2Popup" required placeholder="Digite a segunda pessoa">
+            <button type="submit">Criar Conexão</button>
+        </form>
+        <button class="non-submit-button" onclick="closeAllPopups()">Fechar</button>
+    </div>
+      
+    <div id="cy"></div>
+    <div class="button-container">
+        <button class="small-button" onclick="zoomIn()">Zoom In</button>
+        <button class="small-button" onclick="zoomOut()">Zoom Out</button>
+        <button class="small-button" onclick="clearLayout()">Limpar Web</button>
+        <button class="small-button" onclick="getAllConnections()">Mostrar Todos</button>
+    </div>
+    <h1>Buscar Nome na Web</h1>
+    <input type="text" id="searchName" placeholder="Buscar um nome">
+    <button class="non-submit-button" onclick="searchConnections()">Buscar</button>
+
+    <script src="/script.js"></script>
+</body>
+</html>
