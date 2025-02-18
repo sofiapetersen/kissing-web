@@ -1,5 +1,5 @@
 const express = require('express');
-const supabase = require('./client');
+const supabase = require('../client');
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -61,7 +61,7 @@ app.post('/createconnection', async (req, res) => {
 });
 
 // Endpoint para obter conexões de um nome específico
-app.post('/getconnections', async (req, res) => {
+app.post('/api/getconnections', async (req, res) => {
     const { searchName } = req.body;
     try {
         const { data, error } = await supabase
@@ -87,7 +87,7 @@ app.post('/getconnections', async (req, res) => {
 });
 
 // Endpoint para obter todas as conexões
-app.get('/getallconnections', async (req, res) => {
+app.get('/api/getallconnections', async (req, res) => {
     try {
         const { data: namesData, error: namesError } = await supabase.from('pessoas').select('*');
         const { data: connectionsData, error: connectionsError } = await supabase.from('conexoes').select('*');
@@ -106,7 +106,7 @@ app.get('/getallconnections', async (req, res) => {
 });
 
 // Rota para a página inicial
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
